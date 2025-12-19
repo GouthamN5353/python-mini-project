@@ -1,0 +1,378 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>PES Campus Navigator</title>  
+    <style>  
+        * {  
+            margin: 0;  
+            padding: 0;  
+            box-sizing: border-box;  
+        }  
+        body {  
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);  
+            color: #fff;  
+            min-height: 100vh;  
+            display: flex;  
+            flex-direction: column;  
+            align-items: center;  
+            padding: 40px 20px;  
+        }  
+        header {  
+            text-align: center;  
+            margin-bottom: 50px;  
+        }  
+        .logo {  
+            width: 120px;  
+            height: auto;  
+            margin-bottom: 15px;  
+            border-radius: 10px;  
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);  
+        }  
+        h1 {  
+            font-size: 48px;  
+            font-weight: 700;  
+            letter-spacing: 1px;  
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);  
+        }  
+        .subtitle {  
+            font-size: 20px;  
+            opacity: 0.9;  
+            margin-top: 10px;  
+        }  
+        .container {  
+            background-color: rgba(255, 255, 255, 0.1);  
+            backdrop-filter: blur(10px);  
+            border-radius: 20px;  
+            padding: 50px 80px;  
+            width: 100%;  
+            max-width: 900px;  
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);  
+            border: 1px solid rgba(255, 255, 255, 0.2);  
+        }  
+        .form-group {  
+            margin-bottom: 30px;  
+        }  
+        label {  
+            display: block;  
+            font-size: 22px;  
+            margin-bottom: 12px;  
+            font-weight: 600;  
+        }  
+        select {  
+            width: 100%;  
+            padding: 18px 20px;  
+            font-size: 18px;  
+            border-radius: 12px;  
+            border: none;  
+            background-color: rgba(255, 255, 255, 0.95);  
+            color: #333;  
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);  
+            transition: all 0.3s ease;  
+        }  
+        select:focus {  
+            outline: none;  
+            transform: translateY(-2px);  
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);  
+        }   
+        .audio-toggle {  
+            display: flex;  
+            align-items: center;  
+            gap: 12px;  
+            margin: 20px 0;  
+            padding: 15px;  
+            background: rgba(255, 255, 255, 0.05);  
+            border-radius: 12px;  
+            border: 1px solid rgba(255, 255, 255, 0.1);  
+            transition: all 0.3s ease;  
+        }  
+        .audio-toggle:hover {  
+            background: rgba(255, 255, 255, 0.08);  
+            transform: translateY(-1px);  
+        }  
+        .audio-toggle input[type="checkbox"] {  
+            width: 20px;  
+            height: 20px;  
+            accent-color: #00c853;  
+            cursor: pointer;  
+            transform: scale(1.2);  
+        }  
+        .audio-label {  
+            font-size: 18px;  
+            font-weight: 500;  
+            display: flex;  
+            align-items: center;  
+            gap: 8px;  
+            cursor: pointer;  
+            flex: 1;  
+        }  
+        .audio-icon {  
+            font-size: 20px;  
+        }  
+        .audio-description {  
+            font-size: 14px;  
+            opacity: 0.8;  
+            margin-top: 4px;  
+        }  
+          
+        .button-group {  
+            display: flex;  
+            gap: 15px;  
+            margin-top: 20px;  
+        }  
+        button {  
+            flex: 1;  
+            padding: 18px;  
+            font-size: 22px;  
+            font-weight: bold;  
+            color: white;  
+            border: none;  
+            border-radius: 12px;  
+            cursor: pointer;  
+            transition: all 0.3s ease;  
+        }  
+        .navigate-btn {  
+            background: linear-gradient(90deg, #00c853, #64dd17);  
+        }  
+        .navigate-btn:hover {  
+            transform: translateY(-3px);  
+            box-shadow: 0 10px 25px rgba(0, 200, 83, 0.4);  
+        }  
+        .navigate-btn:disabled {  
+            background: #666;  
+            cursor: not-allowed;  
+            transform: none;  
+            box-shadow: none;  
+        }  
+        .stop-btn {  
+            background: linear-gradient(90deg, #ff6b6b, #ee5a52);  
+            display: none;  
+        }  
+        .stop-btn:hover {  
+            transform: translateY(-3px);  
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);  
+        }  
+        .audio-status {  
+            display: none;  
+            margin-top: 15px;  
+            padding: 12px;  
+            border-radius: 8px;  
+            font-size: 16px;  
+            transition: all 0.3s ease;  
+        }  
+        .audio-playing {  
+            background: rgba(0, 200, 83, 0.2);  
+            border-left: 4px solid #00c853;  
+            color: #00c853;  
+        }  
+        .audio-stopped {  
+            background: rgba(255, 107, 107, 0.2);  
+            border-left: 4px solid #ff6b6b;  
+            color: #ff6b6b;  
+        }  
+        #result {  
+            margin-top: 40px;  
+            padding: 30px;  
+            background-color: rgba(255, 255, 255, 0.15);  
+            border-radius: 15px;  
+            font-size: 20px;  
+            line-height: 1.8;  
+            min-height: 120px;  
+            backdrop-filter: blur(5px);  
+        }  
+        .error {  
+            color: #ff6b6b;  
+            font-weight: bold;  
+        }  
+        .success {  
+            color: #00c853;  
+            font-weight: bold;  
+        }  
+        footer {  
+            margin-top: 60px;  
+            font-size: 16px;  
+            opacity: 0.7;  
+        }  
+          
+        @media (max-width: 768px) {  
+            .container {  
+                padding: 30px 40px;  
+            }  
+            .button-group {  
+                flex-direction: column;  
+            }  
+            h1 {  
+                font-size: 36px;  
+            }  
+            .audio-toggle {  
+                flex-direction: column;  
+                align-items: flex-start;  
+                gap: 8px;  
+            }  
+        }  
+    </style>  
+</head>  
+<body>  
+    <header>  
+        <img src="{{ url_for('static', filename='pes-logo.png') }}" alt="PES University Logo" class="logo">  
+        <h1>PES Campus Navigator</h1>  
+        <p class="subtitle">Find your way around PES University RR Campus effortlessly</p>  
+    </header>  
+    <div class="container">  
+        <div class="form-group">  
+            <label for="start">Where are you right now?</label>  
+            <select id="start">  
+                <option value="">-- Select Starting Point --</option>  
+                {% for loc in locations %}  
+                    <option value="{{ loc }}">{{ loc }}</option>  
+                {% endfor %}  
+            </select>  
+        </div>  
+        <div class="form-group">  
+            <label for="goal">Where do you want to go?:</label>  
+            <select id="goal">  
+                <option value="">-- Select Destination --</option>  
+                {% for loc in locations %}  
+                    <option value="{{ loc }}">{{ loc }}</option>  
+                {% endfor %}  
+            </select>  
+        </div>   
+        <div class="audio-toggle">  
+            <input type="checkbox" id="audioEnabled" name="audioEnabled">  
+            <label for="audioEnabled" class="audio-label">  
+                <span class="audio-icon">🔊</span>  
+                <div>  
+                    <div>Enable Audio Directions</div>  
+                    <div class="audio-description">Get spoken navigation instructions (optional)</div>  
+                </div>  
+            </label>  
+        </div>  
+  
+        <div class="button-group">  
+            <button class="navigate-btn" id="navigateBtn" onclick="findPath()">Show me the way</button>  
+            <button class="stop-btn" id="stopBtn" onclick="stopSpeech()">Stop Audio</button>  
+        </div>  
+        <div id="audio-status-playing" class="audio-status audio-playing">  
+            🎵 Audio directions are now playing. Use "Stop Audio" to pause.  
+        </div>  
+        <div id="audio-status-disabled" class="audio-status audio-stopped">  
+            🔇 Audio directions are disabled. Only text instructions will be shown.  
+        </div>  
+        <div id="result">Your directions will appear here.</div>  
+    </div>  
+    <footer>  
+        PES University | RR Campus • Made for students, by students  
+    </footer>  
+    <script>  
+        const audioCheckbox = document.getElementById("audioEnabled");  
+        const navigateBtn = document.getElementById("navigateBtn");  
+        const stopBtn = document.getElementById("stopBtn");  
+        const audioPlayingStatus = document.getElementById("audio-status-playing");  
+        const audioDisabledStatus = document.getElementById("audio-status-disabled");  
+        const resultDiv = document.getElementById("result");   
+        function updateAudioUI() {  
+            const isAudioEnabled = audioCheckbox.checked;  
+            if (isAudioEnabled) {  
+                audioDisabledStatus.style.display = "none";  
+            } else {  
+                audioDisabledStatus.style.display = "block";    
+                stopBtn.style.display = "none";  
+                audioPlayingStatus.style.display = "none";  
+            }  
+        }    
+        updateAudioUI();  
+        audioCheckbox.addEventListener('change', function() {  
+            updateAudioUI();    
+            if (!this.checked) {  
+                stopSpeech();  
+            }  
+        });  
+        async function findPath() {  
+            const start = document.getElementById("start").value;  
+            const goal = document.getElementById("goal").value;  
+            const isAudioEnabled = audioCheckbox.checked;  
+            if (!start || !goal) {  
+                resultDiv.innerHTML = "<span class='error'>Please select both starting point and destination!</span>";  
+                return;  
+            }   
+            navigateBtn.disabled = true;  
+            navigateBtn.textContent = "Finding route...";  
+            resultDiv.innerHTML = "Finding the best route...";   
+            audioPlayingStatus.style.display = "none";  
+            audioDisabledStatus.style.display = "none";  
+            stopBtn.style.display = "none";  
+            try {  
+                const requestData = {  
+                    start: start,  
+                    goal: goal,  
+                    audio_enabled: isAudioEnabled  
+                };  
+                const response = await fetch("/find_path", {  
+                    method: "POST",  
+                    headers: { "Content-Type": "application/json" },  
+                    body: JSON.stringify(requestData)  
+                });  
+                const data = await response.json();  
+                if (response.ok) {  
+                    resultDiv.innerHTML = `  
+                        <h2 class="success">Route: ${data.route}</h2><br>  
+                        <div style="font-size:22px; line-height:2;">${data.instructions}</div>  
+                    `;  
+                    if (isAudioEnabled) {  
+                        audioPlayingStatus.style.display = "block";  
+                        stopBtn.style.display = "block";  
+                        navigateBtn.style.display = "none";  
+                    } else {  
+                        audioDisabledStatus.style.display = "block";  
+                        stopBtn.style.display = "none";  
+                        navigateBtn.style.display = "block";  
+                    }  
+                } else {  
+                    resultDiv.innerHTML = <span class='error'>${data.error || "Something went wrong"}</span>;  
+                    navigateBtn.disabled = false;  
+                    navigateBtn.textContent = "Show me the way";  
+                    navigateBtn.style.display = "block";  
+                }  
+            } catch (err) {  
+                resultDiv.innerHTML = "<span class='error'>Network error. Please try again.</span>";  
+                navigateBtn.disabled = false;  
+                navigateBtn.textContent = "Show me the way";  
+                navigateBtn.style.display = "block";  
+            }  
+        }  
+        async function stopSpeech() {  
+            try {  
+                await fetch("/stop_speech", { method: "POST" });  
+                audioPlayingStatus.style.display = "none";  
+                stopBtn.style.display = "none";  
+                navigateBtn.style.display = "block";  
+                navigateBtn.disabled = false;  
+                navigateBtn.textContent = "Show me the way";   
+                if (audioCheckbox.checked) {  
+                    audioDisabledStatus.style.display = "block";  
+                    audioDisabledStatus.innerHTML = "⏹ Audio directions stopped. Click 'Show me the way' to restart.";  
+                }  
+            } catch (err) {  
+                console.log("Error stopping speech:", err);  
+            }  
+        }   
+        document.addEventListener('keypress', function(e) {  
+            if (e.key === 'Enter' && !navigateBtn.disabled) {  
+                findPath();  
+            }  
+        });  
+        document.addEventListener('keypress', function(e) {  
+            if (e.key === 'Escape' && stopBtn.style.display !== 'none') {  
+                stopSpeech();  
+            }  
+        });  
+        document.querySelector('.audio-label').addEventListener('click', function(e) {  
+            e.preventDefault();  
+            audioCheckbox.checked = !audioCheckbox.checked;  
+            audioCheckbox.dispatchEvent(new Event('change'));  
+        });  
+    </script>  
+</body>  
+</html>
